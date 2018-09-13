@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html>
+<head>  
+<style>
+html, body { height:100%; margin:0; padding:0 }
+div { position:fixed; width:50%; height:50% }
+#NW { top:0;   left:0;   background:orange  }
+#NE { top:0;   left:50%; background:blue    }
+#SW { top:50%; left:0;   background:green   }
+#SE { top:50%; left:50%; background:red     }    
+</style>
+<script>
+window.onload = function () {
+	var t = 0
+	var data = {}
+	data.num = []
+	data.lag = []
+	data.la1 = []
+	data.la5 = []
+	data.la15 = []
+	data.mem = []
+
+	var charts = {}
+
+	charts.player = new CanvasJS.Chart("NW", {
+		animationEnabled: true,
+		title: {text: "Players"},
+		axisY: {title: "Count",includeZero: true},
+		axisX: {valueFormatString:"HH:mm:ss"},
+		data: [{
+			type: "stepArea",
+			xValueType: "dateTime",
+			xValueFormatString: "HH:mm:ss",
+			markerSize: 5,
+			dataPoints: data.num
+		}]
+	});
+
+	charts.load = new CanvasJS.Chart("NE", {
+		animationEnabled: true,
+		title: {text: "Average load"},
+		axisY: {title:"Relative",includeZero: true},
+		axisX: {valueFormatString:"HH:mm:ss"},
+		toolTip: {shared: true},
+		legend: {verticalAlign: "top"},
+		data: [{
+			type: "splineArea",
+			xValueType: "dateTime",
+			xValueFormatString: "HH:mm:ss",
+			showInLegend: true,
+			name: "1 min",
+			dataPoints: data.la1
+		},
+		{
+			type: "splineArea", 
+			xValueType: "dateTime",
+			xValueFormatString: "HH:mm:ss",
+			showInLegend: true,
+			name: "5 min",
+			dataPoints: data.la5
+		},
+		{
+			type: "splineArea", 
+			xValueType: "dateTime",
+			xValueFormatString: "HH:mm:ss",
+			showInLegend: true,
+			name: "15 min",    
+			dataPoints: data.la15
+		}]
+	});
+
+	charts.lag = new CanvasJS.Chart("SW", {
+		animationEnabled: true,
+		title: {text: "Maximum lag"},
+		axisY: {title: "Seconds", includeZero: true},
+		axisX: {valueFormatString:"HH:mm:ss"},
+		data: [{
+			type: "splineArea", 
+			xValueType: "dateTime",
+			xValueFormatString: "HH:mm:ss",
+			//name: "15 min",    
+			dataPoints: data.lag
+		}]
+	});
+
+	charts.mem = new CanvasJS.Chart("SE", {
+		animationEnabled: true,
+		title: {text: "Memory usage"},
+		axisY: {title:"Percent",includeZero: true, suffix: "%"},
+		axisX: {valueFormatString:"HH:mm:ss"},
+		data: [{
+			type: "splineArea", 
+			xValueType: "dateTime",
+			xValueFormatString: "HH:mm:ss",
+			//name: "15 min",    
+			dataPoints: data.mem
+		}]
+	});
+	function render() {
+		for(i in charts){
+			charts[i].render();
+		}
+	}
+	function push(i){
+		for(j in data){
+			data[j].push({x: i.time, y: i[j] || null})
+		}
+		t = i.time
+	}
+	function update(){
+		var xhr = new XMLHttpRequest();
+
+		xhr.open('GET', 'stat?t=' + t, true);
+		console.log('request open');
+		xhr.send();
+		console.log('request send');
+		xhr.onreadystatechange = function() { // (3)
+			console.log(xhr.status + ': ' + xhr.statusText);
+			if (xhr.readyState == 4 && xhr.status == 200) {
+				let array = JSON.parse(xhr.responseText);
+				console.log(array);
+				for(i in array){
+					push(array[i]);
+				}
+			}
+			render();
+		}
+	}
+	update();
+	setInterval(update, 10000);
+}
+</script>
+</head>
+<body>
+<div id="NW"></div>
+<div id="NE"></div>
+<div id="SW"></div>
+<div id="SE"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</body>
+</html>

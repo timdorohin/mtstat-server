@@ -4,7 +4,7 @@ var readline = require('readline')
 var http = require('http')
 var server = express();
 
-
+var port = process.env.PORT || 3000;
 var monitored = {}
 var page = {}
 	page.urls = ''
@@ -54,8 +54,8 @@ server.get('/:server/stat', function (req, res) {
 	}
 });
 
-server.listen(3000, function () {
-	console.log('Example app listening on port 3000!');
+server.listen(port, function () {
+	console.log(`Monitoring start listening on port ${port}!`);
 });
 
 function monitor() {

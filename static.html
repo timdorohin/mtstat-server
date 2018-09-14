@@ -103,6 +103,9 @@ window.onload = function () {
 	}
 	function push(i){
 		for(j in data){
+			while(data[j].length >= 360){
+				data[j].shift();
+			}
 			data[j].push({x: i.time, y: i[j] || null})
 		}
 		t = i.time

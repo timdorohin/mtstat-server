@@ -1,3 +1,3 @@
-#lor.minetestserver.ga
-#test.minetestserver.ga
-localhost:30000
+lor.minetestserver.ga:30000
+test.minetestserver.ga:30000
+#localhost:30001

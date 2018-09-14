@@ -81,7 +81,7 @@ function monitor() {
 			let data = {}
 			data.time = time
 			pushdata(i, data);
-			//console.log(`error ${err}`)
+			console.log(`error ${err}`)
 		})
 	}
 }
@@ -91,7 +91,7 @@ function pushdata(item, data){
 		monitored[item].status.shift();
 	}
 	monitored[item].status.push(data);
-	console.log(data);
+	//console.log(data);
 }
 
 monitor();

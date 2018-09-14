@@ -113,7 +113,7 @@ window.onload = function () {
 	function update(){
 		var xhr = new XMLHttpRequest();
 
-		xhr.open('GET', 'stat?t=' + t, true);
+		xhr.open('GET',window.location.href + '/stat?t=' + t, true);
 		console.log('request open');
 		xhr.send();
 		console.log('request send');

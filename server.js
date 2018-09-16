@@ -1,6 +1,7 @@
+'use strict';
+
 var express = require('express');
 var fs = require('fs');
-var readline = require('readline')
 var http = require('http')
 var server = express();
 
@@ -54,9 +55,9 @@ server.get('/:server/stat', function (req, res) {
 	}
 });
 
-server.listen(port, function () {
-	console.log(`Monitoring start listening on port ${port}!`);
-});
+//server.listen(port, function () {
+//	console.log(`Monitoring start listening on port ${port}!`);
+//});
 
 function monitor() {
 	let time = Date.now()
@@ -96,3 +97,5 @@ function pushdata(item, data){
 
 monitor();
 setInterval(monitor, 10000);
+
+module.exports = server;
